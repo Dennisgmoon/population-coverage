@@ -46,6 +46,25 @@ export default function App() {
     }
   };
 
+  const handleDownloadCSV = () => {
+    if (results.length === 0) return;
+    const rows = [["Radius (mi)", "ZIP Code"]];
+    results.forEach((r) => {
+      r.zips.forEach((z) => {
+        rows.push([r.radius, z]);
+      });
+    });
+    const csvContent = rows.map(row => row.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `zip_coverage_${zip}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>🚀 Population Coverage by ZIP</h1>
@@ -59,34 +78,39 @@ export default function App() {
       <button onClick={handleCheckCoverage} disabled={loading}>
         {loading ? 'Loading...' : 'Check Coverage'}
       </button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
       {results.length > 0 && (
-        <div style={{ marginTop: '2rem' }}>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={results}>
-              <XAxis dataKey="radius" label={{ value: 'Radius (mi)', position: 'insideBottom', offset: -5 }} />
-              <YAxis label={{ value: 'Population', angle: -90, position: 'insideLeft' }} />
-              <Tooltip formatter={(value) => value.toLocaleString()} />
-              <Bar dataKey="population" isAnimationActive={false}>
-                <LabelList
-                  dataKey="delta"
-                  position="top"
-                  formatter={(val, entry = {}) => (entry.highlight ? `+${val.toLocaleString()}` : '')}
-                />
-                {results.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.highlight ? '#f59e0b' : '#3b82f6'}
+        <>
+          <button onClick={handleDownloadCSV} style={{ marginLeft: '1rem', padding: '0.5rem' }}>
+            ⬇️ Download ZIP Coverage CSV
+          </button>
+          <div style={{ marginTop: '2rem' }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={results}>
+                <XAxis dataKey="radius" label={{ value: 'Radius (mi)', position: 'insideBottom', offset: -5 }} />
+                <YAxis label={{ value: 'Population', angle: -90, position: 'insideLeft' }} />
+                <Tooltip formatter={(value) => value.toLocaleString()} />
+                <Bar dataKey="population" isAnimationActive={false}>
+                  <LabelList
+                    dataKey="delta"
+                    position="top"
+                    formatter={(val, entry = {}) => (entry.highlight ? `+${val.toLocaleString()}` : '')}
                   />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-          <p style={{ fontSize: '0.9rem', marginTop: '0.5rem', color: '#555' }}>
-            Highlighted bar shows where the largest population increase occurs per radius.
-          </p>
-        </div>
+                  {results.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.highlight ? '#f59e0b' : '#3b82f6'}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem', color: '#555' }}>
+              Highlighted bar shows where the largest population increase occurs per radius.
+            </p>
+          </div>
+        </>
       )}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }
