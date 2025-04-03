@@ -84,10 +84,23 @@ export default function App() {
             ⬇️ Download ZIP Coverage CSV
           </button>
           <div style={{ marginTop: '2rem' }}>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={results}>
-                <XAxis dataKey="radius" label={{ value: 'Radius (mi)', position: 'insideBottom', offset: -5 }} />
-                <YAxis label={{ value: 'Population', angle: -90, position: 'insideLeft' }} />
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart data={results} margin={{ top: 20, right: 20, left: 40, bottom: 40 }}>
+                <XAxis
+                  dataKey="radius"
+                  tickFormatter={(value) => `${value} mi`}
+                  tick={{ fontSize: 12, fill: '#555' }}
+                  label={{ value: 'Radius (miles)', position: 'insideBottom', offset: -5 }}
+                />
+                <YAxis
+                  tickFormatter={(value) => {
+                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                    if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
+                    return value;
+                  }}
+                  tick={{ fontSize: 12, fill: '#555' }}
+                  label={{ value: 'Population', angle: -90, position: 'insideLeft' }}
+                />
                 <Tooltip formatter={(value) => value.toLocaleString()} />
                 <Bar dataKey="population" isAnimationActive={false}>
                   <LabelList
