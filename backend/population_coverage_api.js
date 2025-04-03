@@ -69,12 +69,6 @@ app.get('/api/zip-clusters', (req, res) => {
   res.json(clusterData);
 });
 
-// Serve static frontend
-app.use(express.static(pathModule.join(__dirname, 'dist')));
-app.get('*', (req, res) => {
-  res.sendFile(pathModule.join(__dirname, 'dist/index.html'));
-});
-
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
