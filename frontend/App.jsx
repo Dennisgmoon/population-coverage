@@ -69,12 +69,14 @@ setResults(data.map((d, i) => {
               <XAxis dataKey="radius" label={{ value: 'Radius (mi)', position: 'insideBottom', offset: -5 }} />
               <YAxis label={{ value: 'Population', angle: -90, position: 'insideLeft' }} />
               <Tooltip formatter={(value) => value.toLocaleString()} />
-              <Bar
-  dataKey="population"
-  isAnimationActive={false}
-  fill={({ payload }) => (payload.highlight ? '#f59e0b' : '#3b82f6')}
->
-
+              <Bar dataKey="population" isAnimationActive={false}>
+                  {results.map((entry, index) => (
+                    <Cell
+                    key={`cell-${index}`}
+                    fill={entry.highlight ? '#f59e0b' : '#3b82f6'}
+    />
+  ))}
+</Bar>
                <LabelList
   dataKey="delta"
   position="top"
