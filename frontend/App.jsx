@@ -29,11 +29,16 @@ export default function App() {
         }
       }
 
-setResults(data.map((d, i) => ({
-  ...d,
-  highlight: d.radius === highlightRadius,
-  percent: i > 0 ? ((d.population - data[i - 1].population) / data[i - 1].population) * 100 : 0
-})));
+setResults(data.map((d, i) => {
+  const delta = i > 0 ? d.population - data[i - 1].population : 0;
+  return {
+    ...d,
+    delta,
+    highlight: d.radius === highlightRadius,
+    percent: i > 0 ? (delta / data[i - 1].population) * 100 : 0
+  };
+}));
+
 
     } catch (err) {
       setError(err.message);
