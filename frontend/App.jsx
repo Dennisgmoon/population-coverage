@@ -70,11 +70,11 @@ setResults(data.map((d, i) => {
               <YAxis label={{ value: 'Population', angle: -90, position: 'insideLeft' }} />
               <Tooltip formatter={(value) => value.toLocaleString()} />
               <Bar dataKey="population" fill="#3b82f6">
-                <LabelList
-                  dataKey="delta"
-                  position="top"
-                  formatter={(val, entry) => (entry.highlight ? `+${val.toLocaleString()}` : '')}
-                />
+               <LabelList
+  dataKey="delta"
+  position="top"
+  formatter={(val, entry = {} ) => (entry.highlight ? `+${val.toLocaleString()}` : '')}
+/>
               </Bar>
             </BarChart>
           </ResponsiveContainer>
