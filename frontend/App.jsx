@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, Cell } from 'recharts';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
@@ -29,17 +29,15 @@ export default function App() {
         }
       }
 
-setResults(data.map((d, i) => {
-  const delta = i > 0 ? d.population - data[i - 1].population : 0;
-  return {
-    ...d,
-    delta,
-    highlight: d.radius === highlightRadius,
-    percent: i > 0 ? (delta / data[i - 1].population) * 100 : 0
-  };
-}));
-
-
+      setResults(data.map((d, i) => {
+        const delta = i > 0 ? d.population - data[i - 1].population : 0;
+        return {
+          ...d,
+          delta,
+          highlight: d.radius === highlightRadius,
+          percent: i > 0 ? (delta / data[i - 1].population) * 100 : 0
+        };
+      }));
     } catch (err) {
       setError(err.message);
       setResults([]);
@@ -70,18 +68,17 @@ setResults(data.map((d, i) => {
               <YAxis label={{ value: 'Population', angle: -90, position: 'insideLeft' }} />
               <Tooltip formatter={(value) => value.toLocaleString()} />
               <Bar dataKey="population" isAnimationActive={false}>
-                  {results.map((entry, index) => (
-                    <Cell
+                <LabelList
+                  dataKey="delta"
+                  position="top"
+                  formatter={(val, entry = {}) => (entry.highlight ? `+${val.toLocaleString()}` : '')}
+                />
+                {results.map((entry, index) => (
+                  <Cell
                     key={`cell-${index}`}
                     fill={entry.highlight ? '#f59e0b' : '#3b82f6'}
-    />
-  ))}
-</Bar>
-               <LabelList
-  dataKey="delta"
-  position="top"
-  formatter={(val, entry = {} ) => (entry.highlight ? `+${val.toLocaleString()}` : '')}
-/>
+                  />
+                ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
